@@ -1,4 +1,4 @@
-Due-DDS implemente Direct Digital Synthesis (DDS) for the Arduino Due (SAM3X8E microcontroller), which can output virtually any periodic signal. The Due's 12 bit digital-to-analog converter (DAC) is used to convert digital values to anolog signals. 
+Due-DDS implements Direct Digital Synthesis (DDS) for the Arduino Due (SAM3X8E microcontroller), to output virtually any periodic analog signal using the Due's 12 bit digital-to-analog converter (DAC).
 
 Due to the limited speed of the DAC, the output frequency or, alternatively, the time resolution are limited. For instance, you can output a periodic signal of 1024 samples at about 1 kHz. To further increase the output frequency, you need to decrease the number of samples. See below for a detailed explanation.
 
@@ -6,19 +6,21 @@ Due to the limited speed of the DAC, the output frequency or, alternatively, the
 
 To configure the signal frequency and time resolution, you need to define two variables in the source code, namely  variables ```F_SIGNAL``` and ```TABLE_SIZE``` at the top of file ```dds.c```.
 
+Moreover, you need to fill the array ```phase_table``` with the samples of the periodic signal. Functions for sine waves and sawtooth waves are included.
+
 # Building 
 
 Although we use the Arduino Due hardware, this implementation does not use the Arduino IDE. Instead the implementation is based on the ATMEL Software Framework (ASF) (tested with ASF v3.29.0.41). You need to set the path to the ASF installation in the Makefile (variable ```ASF_ROOT```).
 
-Moreover, you need to set the path the the ARM compiler using variable ```CROSS``` in the Makefile (tested with GNU ARM Embedded Toolchain version 5.2.2015q4). 
+Moreover, you need to set the path to the ARM compiler using variable ```CROSS``` in the Makefile (tested with GNU ARM Embedded Toolchain version 5.2.2015q4). 
 
 To compile, simply execute ```make``` from the source folder. 
 
-To upload the resulting binary ```dds.bin``, you can use the BOSSA tool:
+To upload the resulting binary file ```dds.bin```, you can use the BOSSA tool:
 
 ```
 $ stty -F /dev/ttyACM0 1200
-$ ~/local/arduino-1.5.8/hardware/tools/bossac --port=ttyACM0 -U false -e -w -v -b dds.bin -R
+$ bossac --port=ttyACM0 -U false -e -w -v -b dds.bin -R
 ```
 
 BOSSA is included with the Ardruino 1.5.8 IDE (folder ```hardware/tools```) or can be downloaded from http://www.shumatech.com/web/products/bossa. The first command opens a serial connection at 1200 Baud, which resets the microcontroller to make it ready for flashing new code (connect to the programming port for this to work). You can also manually press the reset button on the Due board for the same effect.
